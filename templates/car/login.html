@@ -1,0 +1,16 @@
+<style>
+	* {
+		font-size: 30px;
+	}
+	h1 {
+		font-size: 40px;
+		color: red;
+	}
+</style>
+<form method="post" action="">
+	<h1>登录你的特斯拉</h1>
+	<p><label>Email:<input type="email" name="email" /></label></p>
+	<p><label>密码:<input type="password" name="password" /></label></p>
+	<p><button type="submit" /></p>
+	{% csrf_token %}
+</form>

@@ -1,0 +1,24 @@
+<style>
+	#power {
+		width: 500px;
+		height: 40px;
+		border: 2px solid green;
+	}
+	#current {
+		width: {{ car.charge_state.battery_level }}%;
+		height: 40px;
+		line-height: 40px;
+		text-align: center;
+		background: green;
+		color: white;
+	}
+</style>
+<h1>车辆：{{ car.display_name }}</h1>
+
+<h2>电量：续航约{{ car.charge_state.battery_range }}英里</h2>
+<div id="power">
+	<div id="current">{{ car.charge_state.battery_level }}%</div>
+</div>
+<h2>车外温度：{{ car.climate_state.outside_temp }}</h2>
+<h2>车内温度：{{ car.climate_state.inside_temp }}</h2>
+<h2>GPS坐标：{{ car.drive_state.corrected_latitude }} / {{ car.drive_state.corrected_longitude }}</h2>

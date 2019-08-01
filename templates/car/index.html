@@ -1,0 +1,6 @@
+<h1>你的特斯拉清单</h1>
+<ul>
+	{% for car in cars %}
+	<li><a href="{{ car.id }}/">车辆：{{ car.display_name }} <span>{{ car.state }}</span></a></li>
+	{% endfor %}
+</ul>
