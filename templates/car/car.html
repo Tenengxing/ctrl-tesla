@@ -1,4 +1,10 @@
+<html>
+<head>
 <style>
+	body {
+		background: black;
+		color: white;
+	}
 	#power {
 		width: 500px;
 		height: 40px;
@@ -12,7 +18,12 @@
 		background: green;
 		color: white;
 	}
+	button {
+		font-size: 40px;
+	}
 </style>
+</head>
+<body>
 <h1>车辆：{{ car.display_name }}</h1>
 
 <h2>电量：续航约{{ car.charge_state.battery_range }}英里</h2>
@@ -22,3 +33,20 @@
 <h2>车外温度：{{ car.climate_state.outside_temp }}</h2>
 <h2>车内温度：{{ car.climate_state.inside_temp }}</h2>
 <h2>GPS坐标：{{ car.drive_state.corrected_latitude }} / {{ car.drive_state.corrected_longitude }}</h2>
+<h2>车辆控制</h2>
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/door_lock'">锁车</button>
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/door_unlock'">解锁</button><br />
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/honk_horn'">鸣笛</button>
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/flash_lights'">闪灯</button><br />
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/auto_conditioning_start'">开空调</button>
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/auto_conditioning_stop'">关空调</button>
+<form method="post" action="/car/{{ car.id }}/control/set_temps">
+<label>驾驶坐温度<input type="integer" name="driver_temp" value="23" /></label>
+<label>副驾驶温度<input type="integer" name="passenger_temp" value="24" /></label>
+<button type="submit">调节温度</button>{% csrf_token %}
+</form>
+<br />
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/actuate_trunk_front'">开前备厢</button>
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/actuate_trunk_rear'">开后备厢</button><br />
+<button type="button" onclick="window.location.href='/car/{{ car.id }}/control/media_next_track'">下一首歌</button>
+</body>
