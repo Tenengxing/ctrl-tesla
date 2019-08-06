@@ -8,4 +8,5 @@ urlpatterns = [
     path('login/', views.login),
     path('<int:car_id>/', views.car),
     path('<int:car_id>/control/<str:command>', views.command),
+    path('summon/<int:vehicle_id>/', views.summon),
 ]

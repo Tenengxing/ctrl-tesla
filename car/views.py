@@ -1,4 +1,6 @@
 import requests
+import base64
+import websocket
 
 from django.shortcuts import render, redirect
 from django.conf import settings
@@ -19,6 +21,7 @@ def login(request):
 		print(resp.json())
 		if resp.status_code == 200:
 			request.session['token'] = resp.json()
+			request.session['token']['email'] = request.POST['email']
 		
 		return redirect('/car/')
 	return render(request, "car/login.html")
@@ -30,7 +33,7 @@ def index(request):
 	resp = session.get(settings.TESLA_BASE_URL+"/api/1/vehicles", headers={
 		"Authorization": "Bearer " + request.session['token']['access_token']
 		})
-	# print(resp.json())
+	print(resp.json())
 	cars = resp.json()['response']
 	return render(request, "car/index.html", {'cars': cars})
 
@@ -41,7 +44,7 @@ def car(request, car_id):
 	resp = session.get(settings.TESLA_BASE_URL+f"/api/1/vehicles/{car_id}/vehicle_data", headers={
 		"Authorization": "Bearer " + request.session['token']['access_token']
 		})
-	# print(resp.json())
+	print(resp.status_code)
 	car = resp.json()['response']
 	return render(request, "car/car.html", {'car': car})
 
@@ -78,3 +81,42 @@ def command(request, car_id, command):
 	return redirect(f"/car/{car_id}/")
 
 
+def summon(request, vehicle_id):
+	if request.method == 'POST':
+	    second = int(request.POST['second'])
+	    enp = "%s:%s" % (request.session['token']['email'], request.GET['token'])
+	    auth = base64.b64encode(bytes(enp, "utf-8")).decode("utf-8")
+	    url = f"{settings.TESLA_BASE_WS}{vehicle_id}"
+	    print("url: " + url)
+	    ws = websocket.WebSocketApp(url,
+	          header={"Authorization": f"Basic {auth}"},
+	          on_message = on_message,
+	          on_error = on_error,
+	          on_close = on_close)
+	    ws.on_open = on_open
+	    ws.run_forever()
+
+	return render(request, "car/summon.html")
+
+def on_open(ws):
+    def run(*args):
+        time.sleep(1)
+        ws.send(b'{"msg_type":"control:hello"}')
+        time.sleep(0.5)
+        ws.send(b'{"msg_type":"autopark:cmd_reverse","latitude":39.901695,"longitude":116.466088}')
+        for i in range(8):
+            time.sleep(1)
+            ws.send(b'{"msg_type":"autopark:heartbeat_app","timestamp":39.91957}')
+        time.sleep(5)
+        ws.close()
+        print("thread terminating...")
+    thread.start_new_thread(run, ())
+
+def on_message(ws, message):
+    print(f"### msg: {message}")
+
+def on_error(ws, error):
+    print(f"### error msg: {error}")
+
+def on_close(ws):
+    print("### closed ###")

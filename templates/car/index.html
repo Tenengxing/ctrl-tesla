@@ -1,6 +1,6 @@
 <h1>你的特斯拉清单</h1>
 <ul>
 	{% for car in cars %}
-	<li><a href="{{ car.id }}/">车辆：{{ car.display_name }} <span>{{ car.state }}</span></a></li>
+	<li><a href="{{ car.id }}/">车辆：{{ car.display_name }}</a> <a href="summon/{{ car.vehicle_id }}/?token={{ car.tokens|first }}">召唤</a> <span>{{ car.state }}</span></li>
 	{% endfor %}
 </ul>

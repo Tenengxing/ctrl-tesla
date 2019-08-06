@@ -1,0 +1,39 @@
+<html>
+<head>
+<style>
+	body {
+		background: black;
+		color: white;
+	}
+	#power {
+		width: 500px;
+		height: 40px;
+		border: 2px solid green;
+	}
+	#current {
+		width: {{ car.charge_state.battery_level }}%;
+		height: 40px;
+		line-height: 40px;
+		text-align: center;
+		background: green;
+		color: white;
+	}
+	button, p {
+		font-size: 40px;
+	}
+	input {
+		font-size: 30px;
+	}
+</style>
+</head>
+<body>
+<h1>直播Day 4：召唤</h1>
+<form method="post">
+	<p><label>时长：<input type="integer" name="second" value="5" />秒</label></p>
+	<p><label>前进：<input type="radio" name="cmd" value="forward" checked="checked" /></label></p>
+	<p><label>倒车：<input type="radio" name="cmd" value="reverse" /></label></p>
+	<button type="submit">开始</button>
+	{% csrf_token %}
+	</form>
+</body>
+</html>
